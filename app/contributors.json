@@ -1,0 +1,30 @@
+{
+    "items": [
+ {
+            "name": "Viotech Communications",
+            "logo": "app/img/viotech.gif",
+            "link": "http://viotech.net/"
+        },
+        {
+            "name": "LaBRI",
+            "logo": "app/img/labri.jpg",
+            "link": "http://www.labri.fr"
+        },
+        {
+          "name": "Dissedan",
+          "logo": "app/img/dissedan.png",
+          "link": "http://wp2.tele.pw.edu.pl/disedan/"
+        },
+        {
+          "name": "Delta",
+          "logo": "app/img/delta.jpg",
+          "link": "http://www.viotech.net/delta"
+        },
+        {
+            "name": "Dash Industry Forum",
+            "logo": "app/img/if.png",
+            "link": "https://github.com/Dash-Industry-Forum/dash.js"
+        }
+        
+    ]
+}

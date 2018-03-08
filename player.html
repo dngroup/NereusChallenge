@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+
+<!--<div class="modal fade" id="streamModal">
+    <div class="modal-dialog">
+        <div class="list-group modal-list"><a
+                ng-repeat="item in availableStreams"
+                href="#"
+                class="list-group-item"
+                ng-click="setStream(item)"
+                data-dismiss="modal"> {{item.name}} </a></div>
+    </div>
+</div>-->
+<!--<div class="container">-->
+
+
+
+<div class="row">
+<!--    <div class="col-md-2">
+
+                <div class="row">
+                    <div id="demo" class="anchor"></div>
+                    &lt;!&ndash; <div class="col-md-3"><h3>http://msstream.viotech.net</h3></div>&ndash;&gt;
+
+                    <button class="btn btn-success col-md-12" ng-click="reLoad()">Reload your demo</button>
+                    <button class="btn btn-info col-md-12" ng-click="disconnect()">Go back to the index</button>
+
+                    <p>In this demonstration, you can:</p>
+                    <ol>
+                        <li>Add or remove servers by clicking on their icons;</li>
+                        <li>Consider simultaneously using more or less servers by using the blue sliders below the video frame;</li>
+                        <li>Modify servers' upload throughput by using the green sliders on the bottom right side of the webpage;</li>
+                        <li>Switch back to a DASH use-case by using one server only.</li>
+                    </ol>
+                </div>
+
+    </div>-->
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>{{videoName}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-md-9">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dash-video-player ">
+                        <div id="videoContainer">
+                            <video controls="true" autoplay="true"></video>
+                            <div id="video-caption"></div>
+                            <div id="moving-graph" ng-click="reverseInfosActivated()">
+                                <div ng-show="infosActivated">
+                                    <div style="position: absolute;left:3.5%;right:3.5%">
+                                        <div class="row">
+                                            <canvas id="chartQuality" width="60%" height="12.5%"></canvas>
+                                        </div>
+                                        <div class="row">
+                                            <canvas id="chartNumberOfServers" width="60%" height="12.5%"></canvas>
+                                        </div>
+                                        <div class="row">
+                                            <canvas id="chartBuffer" width="60%" height="12.5%"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="!infosActivated">
+                                    <div style="position: absolute;left:10%;">
+                                        <h4> <span class="glyphicon glyphicon-info-sign"/> Infos</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="cursortest" class="panel panel-default ">
+                        <div class="panel-heading panel-top">
+                            <div class="row">
+                                <div class="panel-title">
+                                    <div class="col-md-9"> Servers selection - click on the servers to activate/desactivate them and select the number of simultaneously used servers with the slider</div>
+                                    <div class="col-md-3"><rzslider
+                                            rz-slider-model="numberOfSimultaneousServers.model"
+                                            rz-slider-options="numberOfSimultaneousServers.options"></rzslider>
+                                        <p> {{numberOfServersUpdating}} </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="firetest" class="panel-body">
+                            <canvas id="myCanvas" resize="true">Your browser does not support canvas
+                                <img src="/app/img/svg/programmer.svg" id="programmer">img</img>
+                                <img src="/app/img/legend.png" id="legend">img</img>
+                                <img src="/app/img/svg/server.svg" id="server1" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server2" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server3" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server4" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server5" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server6" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server7" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server8" >img</img>
+                                <img src="/app/img/svg/server.svg" id="server9" >img</img>
+                            </canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-top"><span class="panel-title">Video informations</span>
+
+
+                        </div>
+                        <div class="panel-body panel-stats">
+
+                            <p class="text-primary">Buffer Length: <span class="text-success">{{videoBufferLength}}</span></p>
+                            <!--<p class="text-primary">Global quality: <span class="text-success">{{opQuality}} Mbps</span></p>-->
+                            <p class="text-primary">Current representation: <span class="text-success">{{representationUsed}}/{{representationTotal}}</span></p>
+                            <p class="text-primary">Available representations:</p>
+                            <div ng-repeat="item in allQualities">
+                                <p class="text-primary col-md-12" style="margin-left: 10px">{{item.qualityIndex + 1}}: <span class="text-success">{{item.bitrate/1000| number : 0}} kbps <!--  <div ng-show="item.qualityIndex===0">overhead</div>--></span></p>
+                            </div>
+                            <!-- <p class="text-success" title="[low] < [average] < [high]">{{videoLatency}}</p> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-top">
+                            <h1 class="panel-title">Bandwidth limitation of the servers </h1>
+
+                        </div>
+                        <div class="panel-body">
+
+                            <div ng-repeat="item in serverdocker.name">
+                                <div ng-show="chooseServer(item.name)">
+                                    <div class="label label-info" style="background-color:blue">{{item.name}}:</div>
+                                    <div class="row"></div>
+
+                                    <div>
+                                        <rzslider
+                                                rz-slider-model="slider[item.addr].model"
+                                                rz-slider-options="slider[item.addr].options"></rzslider>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="panel-footer">
+                            <h1 class="panel-title"> Server side limitation. The actual bandwidth depends on your own connection. </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row ">
+        <div class="col-md-6">
+        <div id="scenario" class="anchor"></div>
+           <div class="panel panel-default">
+               <div class="panel-heading panel-top ">
+                   <h1 class="panel-title">Current scenario testbed </h1>
+               </div>
+                <div class="panel-body">
+                    <p> Several servers are deployed with a 700Kbps to 3400Kbps upload capacity.</p><br/>
+                    <p>Each server is hosting several representations.</p><br/>
+                    <p> The MS-Stream player is trying to simultaneously retrieve descriptions of the video in the given number of
+                        servers in order to merge them and display the highest possible content quality.</p></br>
+                    <p>According to the number of descriptions retrieved for a given video segment the intrinsical segment
+                        quality could change.</p><br/>
+                    <p>When all the descriptions are collected, the highest possible video quality is displayed.</p><br/>
+                    <p>Should some descriptions be too late for content playout, playback continuity is insured yet in
+                        sub-optimal quality.</p>
+                    <p>For demonstration purposes, the buffer is limited on purpose so that we can immediately observe the impact of our actions. Therefore, due to the variable bitrate of the videos, it might happen that the player drops some segments even if its download bandwidth appears to be ok. In a real context, with a standard behaviour of the buffer of the video, the impact of the variable bitrate would not be seen.
+                    </p>
+				</div>	
+           </div>
+        </div>
+    
+        <!--<div class="row">-->
+        <!--<div class="col-md-6">
+            <div id="how" class="anchor"></div>
+            <div class="panel panel-default ">
+                <div class="panel-heading panel-top">
+                    <h1 class="panel-title"> Tips for the demo </h1>
+                </div>
+                <div class="panel-body">
+
+                    <ul>
+                        <li>Step 1 - At the beginning, the player is using only one server, following the DASH standard. As the bandwidth of the server is limited, the quality of the video is 2 Mbps. </li>
+                        <li>Step 2 - Add 2 servers by clicking on them in the schema. Increase the number of simultaneous servers to 3. Now, th player is using 3 servers and can agregate their bandwidth to play the 6 Mbps quality.</li>
+                        <li>Step 3 - Decrease the bandwidth of one of the servers. The global bandwith of the streaming session decreases. The contribution of the modified server is less than the 2 others. The video quality decreases, but only a little.</li>
+                        <li>Step 4 - Add a 4th server by clicking on it on the schema. The player switches the worst server with the new one and since the new server has a better bandwidth, the player keeps this new server.</li>
+                    </ul>
+                    <div class="row"></div>
+                    <iframe width="100%" height="400" src="https://www.youtube.com/embed/XAMr6XBIpqM" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>-->
+    </div>
+
+    </div>
+</div>
+
+
+<!--</div>-->
+

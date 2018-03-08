@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="routeApp">
+    <meta charset="utf-8"/>
+    <title>Multiple-Source Stream - JavaScript Player</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <link rel="stylesheet" href="/app/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/app/lib/bootstrap/css/bootstrap-glyphicons.css">
+    <link rel="stylesheet" href="/app/lib/angular.treeview/css/angular.treeview.css">
+    <link rel="stylesheet" href="/app/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/lib/rzslider.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/app/css/navbar-fixed-side.css"/>
+    <style type="text/css">
+        html,
+        body {
+            margin-right: 0;
+            overflow: visible;
+            height: 99%;
+            width: 99%;
+        }
+
+        /* Scale canvas with resize attribute to full size */
+        canvas[resize] {
+            width: 100%;
+            height: 100%;
+        }
+        .viewmargin {
+            margin-top:1%;
+        }
+        .marge {
+            margin-left:5%;
+        }
+
+    </style>
+
+    <!--http://jquery.com/ -->
+    <script src="/app/lib/jquery/jquery.js"></script>
+    <!-- http://angularjs.org/ -->
+    <script src="/app/lib/angular/angular.min.js"></script>
+    <script src="/app/lib/angular/angular-idle.min.js"></script>
+    <script src="/app/lib/angular/angular-resource.min.js"></script>
+    <script src="/app/lib/angular/angular-route.min.js"></script>
+    <script src="/app/lib/angular/angular-sanitize.min.js"></script>
+    <script src="/app/lib/angular/angular-cookies.min.js"></script>
+
+    <script src="/lib/rzslider.min.js"></script>
+
+    <!-- http://getbootstrap.com/ -->
+    <script src="/app/lib/bootstrap/js/bootstrap.min.js"></script>
+    <!-- http://www.flotcharts.org/ -->
+    <script src="/app/lib/flot/jquery.flot.js"></script>
+
+    <!--https://github.com/eu81273/angular.treeview -->
+    <script src="/app/lib/angular.treeview/angular.treeview.min.js"></script>
+
+    <!--http://paperjs.org/-->
+    <script src="/app/lib/paper/paper-full.min.js"></script>
+
+    <!-- https://github.com/creynders/dijon-framework -->
+    <script src="/lib/dijon.js"></script>
+
+    <!-- http://bannister.us/weblog/2007/06/09/simple-base64-encodedecode-javascript/ -->
+    <script src="/lib/base64.js"></script>
+
+    <!-- Misc Libs -->
+    <script src="/lib/xml2json.js"></script>
+    <script src="/lib/objectiron.js"></script>
+    <script src="/lib/long.js"></script>
+    <script src="/lib/Math.js"></script>
+
+    <!-- Canvas -->
+    <!--<script type="text/paperscript" src="/app/canvas.js" canvas="myCanvas"></script>-->
+
+    <!--App-->
+    <script src="/app/routes.js"></script>
+    <script src="/app/demoform.js"></script>
+    <script src="/app/main.js"></script>
+    <script src="/app/login.js"></script>
+    <script src="/app/admin.js"></script>
+    <script src="/app/doc.js"></script>
+    <!--<script src="/app/register.js"></script>-->
+    <!--App-->
+    <script src="/app/metrics.js"></script>
+    <script src="/player/dash.all.debug.js"></script>
+    <script src="/app/lib/chartjs/chart.min.js"></script>
+    <!-- Img -->
+
+
+
+   
+</head>
+<body ng-controller="routeAppController">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-lg-2 col-md-3">
+                <nav class="navbar navbar-default navbar-fixed-side">
+                    <div class="container" style="margin-left:5%; margin-right:5%;">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                                    aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                            </button>
+                            <a href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}"><img src="/app/img/ms-stream.png" class="img-responsive"/></a>
+                            <!--<a class="navbar-brand" href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1) location.reload(true)">Multiple-Source Streaming </a></div>-->
+                        <div id="navbar" class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}">Index</a></li>
+                                <li><a href="#/doc" onclick="if(location.href.indexOf('#/player') > -1) { location.href='#/doc'; location.reload(true);}">Documentation</a></li>
+
+                                    <!--<div class="col-md-3"><h3>http://msstream.viotech.net</h3></div>-->
+
+                                <li ng-show="testLocation()"><a class="col-md-12" onclick="location.reload(true)" style="cursor: pointer;">Reload your demo</a></li>
+
+
+                                <li ng-show="testLocation()" style="margin-left:5%"><p>In this demonstration, you can:</p></li>
+                                <li ng-show="testLocation()"><ol>
+                                        <li>Add or remove servers by clicking on their icons;</li>
+                                        <li>Consider simultaneously using more or less servers by using the blue sliders below the video frame;</li>
+                                        <li>Modify servers' upload throughput by using the green sliders on the bottom right side of the webpage;</li>
+                                        <li>Click on "Infos" in the top right of the video to get metrics about the bitrate of the video, the number of servers used and the buffer of the video;</li>
+                                        <li>Switch back to a DASH use-case by using one server only.</li>
+                                    </ol></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+        </div>
+        <div class="col-sm-9 col-lg-10 col-md-9 viewmargin">
+
+            <div ng-view></div>
+            <!-- Footer -->
+            <div class="footer-area" >
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="compat-box col-md-5 ">
+                            <div id="about" class="anchor"></div>
+                            <h3>Compatibility Notes:</h3>
+                            <ul class="list-group">
+                                <li class="list-group-item">A browser that supports MSE (Media Source Extensions) is required: Chrome, Chromium, Firefox, Opera.
+                                </li>
+                                <li class="list-group-item">Compatibility is not ensured with Safari on MacOS X and Microsoft Edge.
+                                </li>
+                                <li class="list-group-item">Use the most up-to-date version of your browser for the best
+                                    compatibility.
+                                </li>
+                            </ul>
+                        </div>
+                        <!--<div class="col-md-3">
+                            <h3 class="footer-text">Player Libraries:</h3>
+                            <a
+                                    ng-repeat="item in playerLibraries"
+                                    class="footer-text"
+                                    href="{{item.link}}"
+                                    target="_blank"> {{item.name}} </a>
+
+                            <h3 class="footer-text">Showcase Libraries:</h3>
+                            <a
+                                    ng-repeat="item in showcaseLibraries"
+                                    class="footer-text"
+                                    href="{{item.link}}"
+                                    target="_blank"> {{item.name}} </a></div>
+                        <div class="col-md-4">
+                            <h3 class="footer-text">Contributors:</h3>
+                            <a
+                                    ng-repeat="item in contributors"
+                                    class="footer-text"
+                                    href="{{item.link}}"
+                                    target="_blank"> <img ng-show="hasLogo(item)" ng-src="{{item.logo}}" alt="{{item.link}}"/>
+                                <span class="contributor" ng-show="!hasLogo(item)">{{item.name}}</span> </a></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+</body>
+</html>

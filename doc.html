@@ -1,0 +1,62 @@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default ">
+                <div class="panel-heading panel-top">
+                    <h1 class="panel-title"> How to use the MS-Stream Demonstration (video)</h1>
+                </div>
+                <div class="panel-body">
+                    <iframe width="100%" height="600" src="https://www.youtube.com/embed/XAMr6XBIpqM" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default ">
+                <div class="panel-heading panel-top">
+                    <h1 class="panel-title"> How to use the MS-Stream demonstration</h1>
+                </div>
+                <div class="panel-body">
+                    <p>In this demonstration, you can:</p>
+                    <ol>
+                        <li>Add or remove servers by clicking on their icons;</li>
+                        <li>Consider simultaneously using more or less servers by using the blue sliders below the video frame;</li>
+                        <li>Modify servers' upload throughput by using the green sliders on the bottom right side of the webpage;</li>
+                        <li>Click on "Infos" in the top right of the video to get metrics about the bitrate of the video, the number of servers used and the buffer of the video;</li>
+                        <li>Switch back to a DASH use-case by using one server only.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default ">
+                <div class="panel-heading panel-top">
+                    <h1 class="panel-title"> Tips for the demo </h1>
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        <li>Step 1 - At the beginning, the player is using only one server, following the DASH standard. As the bandwidth of the server is limited, the quality of the video is 2 Mbps. </li>
+                        <li>Step 2 - Increase the number of simultaneous servers to 3. It will automatically add servers. Now, the player is using 3 servers and can aggregate their bandwidth to play the 6 Mbps quality.</li>
+                        <li>Step 3 - Decrease the bandwidth of one of the servers. The global bandwidth of the streaming session decreases. The contribution of the modified server is less than the 2 others. The video quality decreases, but only a little.</li>
+                        <li>Step 4 - Add a 4th server by clicking on it on the schema. The player switches the worst server with the new one and since the new server has a better bandwidth, the player keeps this new server.</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default ">
+                <div class="panel-heading panel-top">
+                    <h1 class="panel-title"> How is MS-Stream working ?</h1>
+                </div>
+                <div class="panel-body">
+                    <!--                    <select class="form-control" ng-model="videoSelected" ng-options="object.videoName for object in contents" ></select>
+                                        <a href="#/player" class="btn btn-danger col-md-6 col-md-offset-3">>>  Try MD-Dash now !  <<</a>-->
+                    <!--<img src="/app/img/temu.pdf" class="img-responsive"/>-->
+                    <a href="/app/img/pdf/demo_temu.png"><img src="/app/img/pdf/demo_temu_small.png" class="img-responsive"/></a>
+                </div>
+            </div>
+        </div>
+    </div>
