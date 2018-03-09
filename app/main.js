@@ -102,9 +102,17 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         urlLogServer,
         initialDate,
         timeMaxBuffer = 8,
-        BaseURL = "http://msstream.viotech.net"
+        BaseURL = "http://msstream.viotech.net",
+        initialServers = 3,
+        currentEmptyBufferEvent = null;
 
-   $scope.sessionId = $routeParams.session;
+
+    var nereusMOSService = $window.nereusMOSService();
+
+
+
+
+    $scope.sessionId = $routeParams.session;
 
     $http.get(BaseURL + "/api/unsecure/logs/addr")
         .success(function(data){
@@ -123,6 +131,10 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     //
     ////////////////////////////////////////
 
+    $scope.mosScore = 0;
+    $scope.computeMOS = function() {
+        $scope.mosScore = nereusMOSService.computeMOS();
+    }
     $scope.slider = [];
 
     $scope.videoBitrate = 0;
@@ -199,7 +211,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
 
     $scope.numberOfSimultaneousServers = {
-        model: 1,
+        model: initialServers,
         options: {
             id: 1,
             floor: 1,
@@ -371,7 +383,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
         $http.post(destinationStats, data, config)
             .success(function (data, status, headers, config) {
-                console.log("ping ok");
+                //console.log("ping ok");
             })
             .error(function (data, status, header, config) {
                 console.log("error with ping");
@@ -420,7 +432,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     $scope.limit = function (dockerid, bitrate) {
         $http.post(BaseURL + "/api/unsecure/docker/" + dockerid + "/" + bitrate)
             .success(function (data, status, headers, config) {
-                console.log("success");
+                //console.log("success");
             })
             .error(function (data, status, headers, config) {
                 console.log("Failed");
@@ -863,10 +875,10 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         	 data[i].sessionId = $scope.sessionID;
          }
 
-
+         nereusMOSService.postStats(data);
          $scope.mddashMetrics = data;
     	 
-        $http.post(destinationStats, data, config)
+        /*$http.post(destinationStats, data, config)
         .success(function (data, status, headers, config) {
 
         })
@@ -878,8 +890,28 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 .error(function(data){
 
                 })
-        });
+        });*/
     	
+    }
+
+    function emptyBuffer (e) {
+        var date = new Date();
+        if (e.type == "bufferstalled") {
+            currentEmptyBufferEvent = {
+                date_begin: date.getTime(),
+                date_end: null,
+                duration: null
+            }
+            nereusMOSService.postEmptyBufferEvents(currentEmptyBufferEvent);
+        } else {
+            if (currentEmptyBufferEvent !== null) {
+                currentEmptyBufferEvent["date_end"] = date.getTime();
+                currentEmptyBufferEvent["duration"] = currentEmptyBufferEvent["date_end"] - currentEmptyBufferEvent["date_begin"];
+                nereusMOSService.putEmptyBufferEvents(currentEmptyBufferEvent);
+                currentEmptyBufferEvent = null;
+            }
+        }
+        
     }
     ////////////////////////////////////////
     //
@@ -893,6 +925,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     $scope.version = player.getVersion();
 
     player.initialize();
+    player.getDebug().setLogToBrowserConsole(false);
     player.on(dashjs.MediaPlayer.events.ERROR, onError.bind(this));
     player.on(dashjs.MediaPlayer.events.METRIC_CHANGED, metricChanged.bind(this));
     player.on(dashjs.MediaPlayer.events.METRIC_UPDATED, metricUpdated.bind(this));
@@ -900,6 +933,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, streamInitialized.bind(this));
     player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, manifestUpdated.bind(this));
     player.on(dashjs.MediaPlayer.events.METRICS_MDDASH, metricsMDdash.bind(this));
+    player.on(dashjs.MediaPlayer.events.BUFFER_EMPTY, emptyBuffer.bind(this));
+    player.on(dashjs.MediaPlayer.events.BUFFER_LOADED, emptyBuffer.bind(this));
     player.attachView(video);
     player.attachVideoContainer(document.getElementById("videoContainer"));
 
@@ -1479,7 +1514,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         ////////////////////////////////////
         // Server ok init
         ////////////////////////////////////
-        if (i >= 1 ) {
+        if (i >= initialServers ) {
             server.opacity = 0.2;
             server.state = "down";
             link.visible = false;

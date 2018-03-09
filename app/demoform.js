@@ -226,7 +226,7 @@ app.controller('FormController', function($scope, $sce, $http, $window, $routePa
                     "bandwidth": 3200
                 }
             ],
-            numberOfServers = 1,
+            numberOfServers = 3,
             videoName = videoSelected.ytbid||"Wings_to_paradise";
 
         var destinationStats = BaseURL + "/api/unsecure/demo/initialize",
