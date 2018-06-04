@@ -1,0 +1,75 @@
+
+version: '2'
+
+services:
+  dockermgt:
+    container_name: dockermgt
+    image: mlacaud/dockermgt
+    expose:
+    - "9001"
+    net: "stream"
+    environment:
+    - DOCKERDAEMON=172.17.0.1:2375
+    - SESSIONMGT=sessionmgt:9000
+    - VDOMAIN=localhost
+    - FOLDERDATA=/home/festidash/demoMDDash/docker/data/
+
+  sessionmgt:
+    container_name: sessionmgt
+    image: mlacaud/sessionmgt
+    expose:
+    - "9000"
+    net: "stream"
+    environment:
+    - DOCKERMGT=dockermgt:9001
+    - MPDGENERATOR=mpdgenerator:9002
+    - VIRTUAL_HOST=ms
+    - VIRTUAL_DOMAIN=localhost
+    - VIRTUAL_PORT=9000
+    - LOGSERVER=logserver:9003
+    - AUDIOSERVER=audiostream.localhost
+    - FOLDERSERVER=/home/festidash/demoMDDash/docker/datas/
+    volumes:
+    - /home/festidash/demoMDDash/docker/data/:/home/festidash/demoMDDash/docker/data/
+
+  mpdgenerator:
+    container_name: mpdgenerator
+    image: mlacaud/mpdgenerator
+    expose:
+    - "9002"
+    net: "stream"
+    environment:
+    - MPDURL=server1iface1.localhost
+    - VDOMAIN=localhost
+    - AUDIOSERVER=audiostream.localhost
+
+  db:
+    container_name: db
+    image: mysql:5.6
+    net: "stream"
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=mddash
+    - MYSQL_USER=mddash
+    - MYSQL_PASSWORD=mddash
+
+  audio_server:
+    container_name: audioserver
+    image: mlacaud/audio_server
+    net: "stream"
+    expose:
+    - "80"
+    volumes:
+    - /home/festidash/demoMDDash/docker/data:/usr/local/apache2/htdocs/
+    environment:
+    - VIRTUAL_HOST=audio
+    - VIRTUAL_DOMAIN=localhost
+
+  nginx:
+    container_name: reverse_proxy
+    image: mlacaud/op_proxy
+    net: "stream"
+    ports:
+    - 80:80
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro

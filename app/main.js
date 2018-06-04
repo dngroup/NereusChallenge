@@ -1445,7 +1445,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         }
         if(i<3) server.serverDesc="1";
         if(i>=3 && i<6) server.serverDesc="2";
-        if(i>=6 && i<9) server.serverDesc="3";
+        if(i>=6 && i<serverCount) server.serverDesc="3";
         
         //////////////////////////////////
         // Server names
