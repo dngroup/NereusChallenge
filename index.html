@@ -88,41 +88,63 @@
    
 
 <body ng-controller="routeAppController">
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3 col-lg-2 col-md-3">
-                <nav class="navbar navbar-default navbar-fixed-side">
-                    <div class="container" style="margin-left:5%; margin-right:5%;">
-                        <div class="navbar-header">
-                            <button class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button" aria-controls="navbar" aria-expanded="false"><span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-                            </button>
-                            <a href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}"><img class="img-responsive" src="/app/img/nereus-logo-2.png" style="margin: auto;"></a>
-                            <!--<a class="navbar-brand" href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1) location.reload(true)">Multiple-Source Streaming </a></div>-->
-                        <div class="navbar-collapse collapse" id="navbar">
-                            <ul class="nav navbar-nav">
-                                <li><a href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}">Index</a></li>
-                                <li><a href="#/doc" onclick="if(location.href.indexOf('#/player') > -1) { location.href='#/doc'; location.reload(true);}">Documentation</a></li>
-
-                                    <!--<div class="col-md-3"><h3>http://msstream.viotech.net</h3></div>-->
-
-                                <li ng-show="testLocation()"><a class="col-md-12" onclick="location.reload(true)" style="cursor: pointer;">Reload your demo</a></li>
-
-
-                                <li ng-show="testLocation()" style="margin-left:5%"><p>In this demonstration, you can:</p></li>
-                                <li ng-show="testLocation()"><ol>
-                                        <li>Add or remove servers by clicking on their icons;</li>
-                                        <li>Consider simultaneously using more or less servers by using the blue sliders below the video frame;</li>
-                                        <li>Modify servers' upload throughput by using the green sliders on the bottom right side of the webpage;</li>
-                                        <li>Click on "Infos" in the top right of the video to get metrics about the bitrate of the video, the number of servers used and the buffer of the video;</li>
-                                        <li>Switch back to a DASH use-case by using one server only.</li>
-                                    </ol></li>
-                            </ul>
+<div class="container">
+        <!--<div class="col-sm-3 col-lg-2 col-md-3">-->
+                <nav class="navbar navbar-default">
+                    <div class="container">
+                        <div>
+                            <!--<button class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button" aria-controls="navbar"
+                                aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>-->
+                            <div>
+                                
+                                <h1 style="text-align:center">
+                                    <a href="#/index"    onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}">
+                                        Muslin
+                                    </a>
+                                </h1>
+                            </div>
+                            <!--<div class="navbar-collapse collapse" id="navbar">
+                                <ul class="nav navbar-nav">
+                                    <li>
+                                        <a href="#/index" onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}">Index</a>
+                                    </li>
+                                    <li>
+                                        <a href="#/doc" onclick="if(location.href.indexOf('#/player') > -1) { location.href='#/doc'; location.reload(true);}">Documentation</a>
+                                    </li>
+                
+                
+                                    <li ng-show="testLocation()">
+                                        <a class="col-md-12" onclick="location.reload(true)" style="cursor: pointer;">Reload your demo</a>
+                                    </li>
+                
+                
+                                    <li ng-show="testLocation()" style="margin-left:5%">
+                                        <p>In this demonstration, you can:</p>
+                                    </li>
+                                    <li ng-show="testLocation()">
+                                        <ol>
+                                            <li>Add or remove servers by clicking on their icons;</li>
+                                            <li>Consider simultaneously using more or less servers by using the blue sliders below the video
+                                                frame;</li>
+                                            <li>Modify servers' upload throughput by using the green sliders on the bottom right side of the
+                                                webpage;</li>
+                                            <li>Click on "Infos" in the top right of the video to get metrics about the bitrate of the video,
+                                                the number of servers used and the buffer of the video;</li>
+                                            <li>Switch back to a DASH use-case by using one server only.</li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                            </div>-->
                         </div>
                     </div>
-                </div></nav>
-        </div>
-        <div class="col-sm-9 col-lg-10 col-md-9 viewmargin">
+                </nav>
+        <!--</div>-->
+        <div style="padding-left: 3vw;padding-right: 3vw">
 
             <div ng-view=""></div>
             <!-- Footer -->
@@ -142,39 +164,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <!--<div class="col-md-3">
-                            <h3 class="footer-text">Player Libraries:</h3>
-                            <a
-                                    ng-repeat="item in playerLibraries"
-                                    class="footer-text"
-                                    href="{{item.link}}"
-                                    target="_blank"> {{item.name}} </a>
-
-                            <h3 class="footer-text">Showcase Libraries:</h3>
-                            <a
-                                    ng-repeat="item in showcaseLibraries"
-                                    class="footer-text"
-                                    href="{{item.link}}"
-                                    target="_blank"> {{item.name}} </a></div>
-                        <div class="col-md-4">
-                            <h3 class="footer-text">Contributors:</h3>
-                            <a
-                                    ng-repeat="item in contributors"
-                                    class="footer-text"
-                                    href="{{item.link}}"
-                                    target="_blank"> <img ng-show="hasLogo(item)" ng-src="{{item.logo}}" alt="{{item.link}}"/>
-                                <span class="contributor" ng-show="!hasLogo(item)">{{item.name}}</span> </a></div>-->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </div>
-
-
-
-
-
 
 
 </body>

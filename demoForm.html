@@ -7,38 +7,11 @@
 
 
     <div ng-show="provideSuccessMsg()" class="alert alert-success"> <strong>{{printedMsg}}</strong></div>
+    
     <div class="row">
-        <div class="h2 col-md-9 col-md-offset-3">Multiple-Source Streaming over HTTP</div>
+        <div class="h2 text-center">Select a video</div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading panel-top">
-                    <h1 class="panel-title"> What is MS-Stream ?</h1>
-                </div>
-                <div class="panel-body" >
-                    <p align="justify" ><span class="marge"/>You are relying on HTTP Adaptive Streaming (HAS) protocols to stream your videos, such as MPEG-DASH, Apple’s HLS, Microsoft’s Smooth Streaming or Adobe’s HDS ?
-                    You are paying a CDN solution to a provider, such as Akamai, Amazon or Limelight that deploys the streaming for you ?</p>
-
-                    <p align="justify" ><span class="marge"/>We propose another solution that would provide better video quality to your costumers and less costs of deployment for you, without additional investments required: MS-Stream.</p>
-
-                    <p align="justify" ><span class="marge"/>Unlike existing solutions that rely on the « one server to one client » approach, MS-Stream takes advantage of multiple content source servers simultaneously, including the ones that are not currently used in the content delivery chain (Set-Top boxes, cheap commodity devices, users' devices, any type of datacenters from cloud providers as well as ISPs, …). The MS-Stream solution decides, in live and dynamically for each segment, the number of servers needed and retrieves from each of them the adequate « description* » of the desired segment. Each « description », created instantaneously and on-demand to fit the related server-client pipe, is unique, independent from each other but aggregatable together in order to enhance the overall quality of the received video. Even if a « description » is lost (e.g. server link problems), the client can still benefit from the « descriptions » retrieved from the other servers in order to recompose and display the video.</p>
-
-                    <p align="justify" ><span class="marge"/>MS-Stream outperforms all HAS solutions in terms of video quality bitrate at client side (better by at least 70%), start-up delay (decreased by min. half), rebuffering events (almost null), quality fluctuations (decreased by min. 2/3).
-                    MS-Stream is a pragmatic solution, very lightweight, decoder-standard compliant (H264, H265, …), and fully compatible with MPEG-DASH (the mpd files of both solutions are compatible; MS-Stream using one server is DASH!).</p>
-
-                    <p align="justify" >*A "description" is a specific reduced representation of the original content. The « description » concept proposed here is the heart of our efficient streaming solution MS-Stream. Contact us for additional information on the « description » feature of MS-Stream.</p>
-
-                    <p align="justify"><span class="marge"/>See how to use this demonstration in the <a href="#/doc">"Documentation" page</a> and/or click on a video to launch your demonstration.</p>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="h2 col-md-9 col-md-offset-4">Choose a video</div>
-    </div>
-    <div class="row h1"></div>
+    <div class="row"></div>
     <div ng-repeat="author in authors">
         <div class="row">
             <div class="col-md-12">
@@ -49,7 +22,7 @@
                     </div>
                     <div class="panel-body">
                         <div ng-repeat="video in contents">
-                            <div class="col-md-3" ng-show="video.author===author">
+                            <div class="col-xs-6 col-sm-4 col-md-3" ng-show="video.author===author">
                                 <li>
                                   <div ng-attr-title="{{video.title}}">{{video.title | limitTo: 27}}{{video.title.length>27 ? "..." : ""}}</div>
                                     <img ng-src="{{video.thumbnail}}" ng-attr-title="{{video.title}}" class="img-responsive" style="cursor:pointer" ng-click="createSession(video)"/>

@@ -4,6 +4,10 @@
     height: 30px;
 }
 
+.centered {
+    margin: auto;
+}
+
 @media screen and (min-width: 0px) and (max-width: 1100px) {
     #desktop-streams {
         display: none;

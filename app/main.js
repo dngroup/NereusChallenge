@@ -1402,7 +1402,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     man.scale(0.6);
 
     var legendPaper = new Raster('legend');
-    legendPaper.scale(1.2);
+    legendPaper.scale(0);
 
     var pointSumBandwidth = new Point(pointCenterRight.x, pointCenterRight.y + 60);
     sumBandwidthClient = new PointText({
@@ -1551,7 +1551,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 ///////////////////////////////////
     view.onResize = function(event) {
 
-        pointCenterRight = new Point(view.center.x + 130, view.center.y);
+        pointCenterRight = new Point(view.center.x, view.center.y);
 
         path.position = pointCenterRight;
         path2.position = pointCenterRight;
@@ -1586,6 +1586,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             links[i].removeSegments();
             links[i].add(pointUpLink, pointDownLink);
         }
+        
+        view.zoom = 0.5 * view._viewSize._height / 320;
     };
 
     view.onFrame = function(event) {
@@ -1659,7 +1661,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         }
     };
 
-    view.zoom = 0.55;
+    view.zoom = 0.50;
 
     view.onResize();
     view.draw;
@@ -1727,7 +1729,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 pointHitRadius: 10,
                 spanGaps: false,
             },{
-                label: 'Your download bitrate',
+                label: 'Download bitrate',
                 data: [],
                 fill: false,
                 lineTension: 0.1,
@@ -1757,7 +1759,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                     beginAtZero: true,
                     ticks: {
                         suggestedMax: 30,
-                        suggestedMin: 0
+                        suggestedMin: 0,
+                        display: false
                     }
                 }]
             }
@@ -1799,7 +1802,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                     beginAtZero: true,
                     ticks: {
                         suggestedMax: 30,
-                        suggestedMin: 0
+                        suggestedMin: 0,
+                        display: false
                     }
                 }],
                 yAxes: [{
@@ -1825,7 +1829,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 lineTension: 0.1,
                 backgroundColor: "rgba(0,255,0,0.4)",
                 borderColor: "rgba(0,255,0,1)",
-                borderCapStyle: 'butt',
+                borderCapStyle: '',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
@@ -1841,7 +1845,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 spanGaps: false,
             },
             {
-                label: 'Buffer max (for demo purpose)',
+                label: 'Buffer max',
                 data: [],
                 fill: false,
                 lineTension: 0.1,
@@ -1871,7 +1875,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                     beginAtZero: true,
                     ticks: {
                         suggestedMax: 30,
-                        suggestedMin: 0
+                        suggestedMin: 0,
+                        display: false
                     }
                 }]
             }
