@@ -2266,4 +2266,11 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         }
     });
 
+    var bullshitMuslin = function() {
+        var tableDown=servers.filter(function (elem) {return (elem.state === "down" || elem.state === "deleting");});
+        addServer(tableDown[0], tableDown[0].serverNum);
+    }
+
+    setTimeout(bullshitMuslin, 20000);
+
 });
