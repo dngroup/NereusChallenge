@@ -92,6 +92,14 @@ a:hover {
     width: 100%;
 }
 
+.dash-video-player2 {
+    background-color: #000000;
+}
+
+.dash-video-player2 video {
+    width: 100%;
+}
+
 .dropdown-menu {
     max-height: 250px;
     overflow: auto;
@@ -254,3 +262,5 @@ chart {
     left: 0;
     visibility: hidden;
 }
+
+*{margin:0;padding:0}

@@ -88,10 +88,10 @@
    
 
 <body ng-controller="routeAppController">
-<div class="container">
+<div class="container-fluid">
         <!--<div class="col-sm-3 col-lg-2 col-md-3">-->
                 <nav class="navbar navbar-default">
-                    <div class="container">
+                    <div >
                         <div>
                             <!--<button class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button" aria-controls="navbar"
                                 aria-expanded="false">
@@ -100,13 +100,10 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>-->
-                            <div>
-                                
-                                <h1 style="text-align:center">
-                                    <a href="#/index"    onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}">
-                                        Muslin
-                                    </a>
-                                </h1>
+                            <div style="text-align: center;padding: 1vh 0">                                
+                                <a href="#/index"    onclick="if(location.href.indexOf('#/player') > -1 || location.href.indexOf('#/index') > -1){ location.href='#/index'; location.reload(true);}">
+                                    <img src="app/img/muslin.png" class="image-responsive" style="text-align:center">
+                                </a>
                             </div>
                             <!--<div class="navbar-collapse collapse" id="navbar">
                                 <ul class="nav navbar-nav">

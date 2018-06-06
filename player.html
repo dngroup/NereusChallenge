@@ -1,159 +1,159 @@
 <!DOCTYPE html>
 
-
-<!--<div class="modal fade" id="streamModal">
-    <div class="modal-dialog">
-        <div class="list-group modal-list"><a
-                ng-repeat="item in availableStreams"
-                href="#"
-                class="list-group-item"
-                ng-click="setStream(item)"
-                data-dismiss="modal"> {{item.name}} </a></div>
-    </div>
-</div>-->
-<!--<div class="container">-->
-
-
-
 <div class="row">
-    <div class="col-md-12">
-        
-        <div class="row">
-            <div class="col-xs-6">
-                <div class="dash-video-player ">
-                    <div id="videoContainer">
-                        <video controls="true" autoplay="true" muted></video>
-                        <div id="video-caption"></div>
-                        <div id="moving-graph" ng-click="reverseInfosActivated()">
-                            <div ng-show="infosActivated">
-                                <div style="position: absolute;left:3.5%;right:3.5%">
-                                    <div class="row">
-                                        <canvas id="chartQuality" width="60%" height="12.5%"></canvas>
-                                    </div>
-                                    <div class="row">
-                                        <canvas id="chartNumberOfServers" width="60%" height="12.5%"></canvas>
-                                    </div>
-                                    <div class="row">
-                                        <canvas id="chartBuffer" width="60%" height="12.5%"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ng-show="!infosActivated">
-                                <div style="position: absolute;left:10%;">
-                                    <h5>
-                                        <span class="glyphicon glyphicon-info-sign" /> Infos</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="col-xs-6">
+        <div class="panel panel-success">
+            <div class="panel-heading panel-top">
+                <h1 class="panel-title">MUSLIN client</h1>
             </div>
-            <div class="col-xs-6">
-                <div class="dash-video-player">
-                    <div id="videoContainer2">
-                        <video controls="true" autoplay="true" muted></video>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-                <div class="col-sm-8">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div id="cursortest" class="panel panel-default ">
-                                <div class="panel-heading panel-top">
-                                    <div class="panel-title">
-                                        <div> Servers</div>
-                                    </div>
-                                </div>
-                                <div id="firetest" class="panel-body">
-                                    <canvas id="myCanvas" resize="true">Your browser does not support canvas
-                                        <img src="/app/img/svg/programmer.svg" id="programmer">img</img>
-                                        <img src="/app/img/legend.png" id="legend">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server1">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server2">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server3">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server4">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server5">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server6">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server7">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server8">img</img>
-                                        <img src="/app/img/svg/server.svg" id="server9">img</img>
-                                    </canvas>
-    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading panel-top">
-                                    <h1 class="panel-title">Bandwidth limitation of the servers </h1>
-    
-                                </div>
-                                <div class="panel-body">
-                                    <div class="label label-info" style="background-color:grey">Number of servers:</div>
-                                    <div>
-                                        <rzslider rz-slider-model="numberOfSimultaneousServers.model" rz-slider-options="numberOfSimultaneousServers.options"></rzslider>
-                                        <p> {{numberOfServersUpdating}} </p>
-                                    </div>
-                                    <div ng-repeat="item in serverdocker.name">
-                                        <div ng-show="chooseServer(item.name)">
-                                            <div class="label label-info" style="background-color:blue">{{item.name}}:</div>
-                                            <div class="row"></div>
-    
-                                            <div>
-                                                <rzslider rz-slider-model="slider[item.addr].model" rz-slider-options="slider[item.addr].options"></rzslider>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dash-video-player ">
+                            <div id="videoContainer">
+                                <video controls="true" autoplay="true" muted></video>
+
+                                <div id="moving-graph" ng-click="reverseInfosActivated()">
+                                    <div ng-show="infosActivated">
+                                        <div style="position: absolute;left:3.5%;right:3.5%">
+                                            <div class="row">
+                                                <canvas id="chartQuality" width="60%" height="12.5%"></canvas>
                                             </div>
-    
+                                            <div class="row">
+                                                <canvas id="chartNumberOfServers" width="60%" height="12.5%"></canvas>
+                                            </div>
+                                            <div class="row">
+                                                <canvas id="chartBuffer" width="60%" height="12.5%"></canvas>
+                                            </div>
                                         </div>
-    
                                     </div>
-    
-                                </div>
-                                <div class="panel-footer">
-                                    <h1 class="panel-title"> Server side limitation. The actual bandwidth depends on your own connection. </h1>
+                                    <div ng-show="!infosActivated">
+                                        <div style="position: absolute;left:10%;">
+                                            <h5>
+                                                <span class="glyphicon glyphicon-info-sign" /> Infos</h5>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Video : {{videoName}}</h4>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-danger">
+            <div class="panel-heading panel-top">
+                <h1 class="panel-title">Standard HAS client</h1>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dash-video-player2">
+                            <div id="videoContainer2">
+                                <video controls="true" autoplay="true" muted></video>
+                                <div id="moving-graph2" ng-click="reverseInfosActivated2()">
+                                    <div ng-show="infosActivated2">
+                                        <div style="position: absolute;left:3.5%;right:3.5%">
+                                            <div class="row">
+                                                <canvas id="chartQuality2" width="60%" height="12.5%"></canvas>
+                                            </div>
+                                            <div class="row">
+                                                <canvas id="chartNumberOfServers2" width="60%" height="12.5%"></canvas>
+                                            </div>
+                                            <div class="row">
+                                                <canvas id="chartBuffer2" width="60%" height="12.5%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="!infosActivated2">
+                                        <div style="position: absolute;left:10%;">
+                                            <h5>
+                                                <span class="glyphicon glyphicon-info-sign" /> Infos</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-
-        <!--<div class="row">-->
-        <!--<div class="col-md-6">
-            <div id="how" class="anchor"></div>
-            <div class="panel panel-default ">
-                <div class="panel-heading panel-top">
-                    <h1 class="panel-title"> Tips for the demo </h1>
-                </div>
-                <div class="panel-body">
-
-                    <ul>
-                        <li>Step 1 - At the beginning, the player is using only one server, following the DASH standard. As the bandwidth of the server is limited, the quality of the video is 2 Mbps. </li>
-                        <li>Step 2 - Add 2 servers by clicking on them in the schema. Increase the number of simultaneous servers to 3. Now, th player is using 3 servers and can agregate their bandwidth to play the 6 Mbps quality.</li>
-                        <li>Step 3 - Decrease the bandwidth of one of the servers. The global bandwith of the streaming session decreases. The contribution of the modified server is less than the 2 others. The video quality decreases, but only a little.</li>
-                        <li>Step 4 - Add a 4th server by clicking on it on the schema. The player switches the worst server with the new one and since the new server has a better bandwidth, the player keeps this new server.</li>
-                    </ul>
-                    <div class="row"></div>
-                    <iframe width="100%" height="400" src="https://www.youtube.com/embed/XAMr6XBIpqM" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>-->
     </div>
 
-</div>
-</div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="cursortest" class="panel panel-default ">
+                        <div class="panel-heading panel-top">
+                            <div class="panel-title">
+                                <div> MUSLIN Servers</div>
+                            </div>
+                        </div>
+                        <div id="firetest" class="panel-body">
+                            <canvas id="myCanvas" resize="true">Your browser does not support canvas
+                                <img src="/app/img/svg/programmer.svg" id="programmer">img</img>
+                                <img src="/app/img/legend.png" id="legend">img</img>
+                                <img src="/app/img/svg/server.svg" id="server1">img</img>
+                                <img src="/app/img/svg/server.svg" id="server2">img</img>
+                                <img src="/app/img/svg/server.svg" id="server3">img</img>
+                                <img src="/app/img/svg/server.svg" id="server4">img</img>
+                                <img src="/app/img/svg/server.svg" id="server5">img</img>
+                                <img src="/app/img/svg/server.svg" id="server6">img</img>
+                                <img src="/app/img/svg/server.svg" id="server7">img</img>
+                                <img src="/app/img/svg/server.svg" id="server8">img</img>
+                                <img src="/app/img/svg/server.svg" id="server9">img</img>
+                            </canvas>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-top">
+                            <h1 class="panel-title">Bandwidth limitation of the Muslin servers </h1>
+
+                        </div>
+                        <div class="panel-body">
+                            <div class="label label-info" style="background-color:grey">Number of servers:</div>
+                            <div>
+                                <rzslider rz-slider-model="numberOfSimultaneousServers.model" rz-slider-options="numberOfSimultaneousServers.options"></rzslider>
+                                <p> {{numberOfServersUpdating}} </p>
+                            </div>
+                            <div ng-repeat="item in serverdocker.name">
+                                <div ng-show="chooseServer(item.name)">
+                                    <div class="label label-info" style="background-color:blue">{{item.name}}:</div>
+                                    <div class="row"></div>
+
+                                    <div>
+                                        <rzslider rz-slider-model="slider[item.addr].model" rz-slider-options="slider[item.addr].options"></rzslider>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="panel-footer">
+                            <h1 class="panel-title"> Server side limitation. The actual bandwidth depends on your own connection. </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Video : {{videoName}}</h4>
+        </div>
+    </div>
 
 
-<!--</div>-->
+    <div id="video-caption"></div>
+</div>

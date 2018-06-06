@@ -99,6 +99,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         maxGraphPoints = 50,
         interval = setInterval(pingServer, 20000),
         intervalQualityStats,
+        intervalQualityStats2,
         urlLogServer,
         initialDate,
         timeMaxBuffer = 8,
@@ -142,6 +143,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     $scope.videoPendingIndex = "";
     $scope.videoMaxIndex = 0;
     $scope.videoBufferLength = 0;
+    $scope.videoBufferLength2 = 0;
     $scope.videoDroppedFrames = 0;
     $scope.videoLatencyCount = 0;
     $scope.videoLatency = "";
@@ -204,6 +206,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
 
     $scope.infosActivated = false;
+    $scope.infosActivated2 = false;
 
     $scope.numberOfServersUpdating = "";
     
@@ -780,6 +783,86 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         $scope.safeApply();
     }
 
+    function metricChanged2(e) {
+        var metrics,
+            point,
+            treeData,
+            bufferedRanges = [];
+
+        // get current buffered ranges of video element and keep them up to date
+        for (var i = 0; i < video2.buffered.length; i++) {
+            bufferedRanges.push(video2.buffered.start(i) + ' - ' + video2.buffered.end(i));
+        }
+        $scope.bufferedRanges = bufferedRanges;
+
+        if (e.mediaType == "video") {
+            metrics = getCribbedMetricsFor("video");
+            if (metrics) {
+                $scope.videoBitrate = metrics.bandwidthValue;
+                $scope.videoIndex = metrics.bitrateIndexValue;
+                $scope.videoPendingIndex = metrics.pendingIndex;
+                $scope.videoMaxIndex = metrics.numBitratesValue;
+                $scope.videoBufferLength2 = metrics.bufferLengthValue;
+                $scope.videoDroppedFrames = metrics.droppedFramesValue;
+                $scope.videoRequestsQueue = metrics.requestsQueue;
+                if (metrics.movingLatency["video"]) {
+                    $scope.videoLatencyCount = metrics.movingLatency["video"].count;
+                    $scope.videoLatency = metrics.movingLatency["video"].low.toFixed(3) + " < " + metrics.movingLatency["video"].average.toFixed(3) + " < " + metrics.movingLatency["video"].high.toFixed(3);
+                }
+                if (metrics.movingDownload["video"]) {
+                    $scope.videoDownloadCount = metrics.movingDownload["video"].count;
+                    $scope.videoDownload = metrics.movingDownload["video"].low.toFixed(3) + " < " + metrics.movingDownload["video"].average.toFixed(3) + " < " + metrics.movingDownload["video"].high.toFixed(3);
+                }
+                if (metrics.movingRatio["video"]) {
+                    $scope.videoRatioCount = metrics.movingRatio["video"].count;
+                    $scope.videoRatio = metrics.movingRatio["video"].low.toFixed(3) + " < " + metrics.movingRatio["video"].average.toFixed(3) + " < " + metrics.movingRatio["video"].high.toFixed(3);
+                }
+
+                point = [parseFloat(video2.currentTime), Math.round(parseFloat(metrics.bufferLengthValue))];
+                videoSeries.push(point);
+
+                if (videoSeries.length > maxGraphPoints) {
+                    videoSeries.splice(0, 1);
+                }
+            }
+        }
+
+        if (e.mediaType == "audio") {
+            metrics = getCribbedMetricsFor("audio");
+            if (metrics) {
+                $scope.audioBitrate = metrics.bandwidthValue;
+                $scope.audioIndex = metrics.bitrateIndexValue;
+                $scope.audioPendingIndex = metrics.pendingIndex;
+                $scope.audioMaxIndex = metrics.numBitratesValue;
+                $scope.audioBufferLength = metrics.bufferLengthValue;
+                $scope.audioDroppedFrames = metrics.droppedFramesValue;
+                $scope.audioRequestsQueue = metrics.requestsQueue;
+                if (metrics.movingLatency["audio"]) {
+                    $scope.audioLatencyCount = metrics.movingLatency["audio"].count;
+                    $scope.audioLatency = metrics.movingLatency["audio"].low.toFixed(3) + " < " + metrics.movingLatency["audio"].average.toFixed(3) + " < " + metrics.movingLatency["audio"].high.toFixed(3);
+                }
+                if (metrics.movingDownload["audio"]) {
+                    $scope.audioDownloadCount = metrics.movingDownload["audio"].count;
+                    $scope.audioDownload = metrics.movingDownload["audio"].low.toFixed(3) + " < " + metrics.movingDownload["audio"].average.toFixed(3) + " < " + metrics.movingDownload["audio"].high.toFixed(3);
+                }
+                if (metrics.movingRatio["audio"]) {
+                    $scope.audioRatioCount = metrics.movingRatio["audio"].count;
+                    $scope.audioRatio = metrics.movingRatio["audio"].low.toFixed(3) + " < " + metrics.movingRatio["audio"].average.toFixed(3) + " < " + metrics.movingRatio["audio"].high.toFixed(3);
+                }
+
+                point = [parseFloat(video.currentTime), Math.round(parseFloat(metrics.bufferLengthValue))];
+                audioSeries.push(point);
+
+                if (audioSeries.length > maxGraphPoints) {
+                    audioSeries.splice(0, 1);
+                }
+            }
+        }
+
+        $scope.invalidateDisplay(true);
+        $scope.safeApply();
+    }
+
     function metricUpdated(e) {
         var metrics = player.getMetricsFor("stream"),
             data;
@@ -946,6 +1029,28 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
     player.setAutoPlay(true);
     $scope.player = player;
+
+    ////////////////////////////////////////
+    //
+    // Dash Player Setup
+    //
+    ////////////////////////////////////////
+
+    var video2 = document.querySelector(".dash-video-player2 video");
+    var player2 = dashjs.MediaPlayer().create();
+
+    player2.initialize();
+    player2.getDebug().setLogToBrowserConsole(false);
+    player2.on(dashjs.MediaPlayer.events.ERROR, onError.bind(this));
+    player2.on(dashjs.MediaPlayer.events.METRIC_CHANGED, metricChanged2.bind(this));
+    player.on(dashjs.MediaPlayer.events.PERIOD_SWITCH_COMPLETED, streamSwitch.bind(this));
+    player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, streamInitialized.bind(this));
+    player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, manifestUpdated.bind(this));
+    player2.attachView(video2);
+    player2.attachVideoContainer(document.getElementById("videoContainer2"));
+    player2.setAutoPlay(true);
+    $scope.player2 = player2;
+
 //  controlbar = new ControlBar(player);
 //  controlbar.initialize();
 //  controlbar.disable() //controlbar.hide() // other option
@@ -1038,6 +1143,16 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         intervalQualityStats = setInterval(parseQualityStats, 1000);
     }
 
+    $scope.doLoad2 = function () {
+        player2.attachSource($scope.urlDash);
+        player2.setAutoSwitchQuality(false);
+        player2.enableBufferOccupancyABR(false);
+        player2.setBufferTimeAtTopQuality(timeMaxBuffer);
+        player2.setBufferTimeAtTopQualityLongForm(timeMaxBuffer);
+
+        intervalQualityStats2 = setInterval(parseQualityStats2, 1000);
+    }
+
     $scope.switchTrack = function (track, type) {
         if (!track || (track === player.getCurrentTrackFor(type))) return;
 
@@ -1079,6 +1194,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
         $scope.selectedItem = {};
         $scope.selectedItem.url = paramUrl;
+
         getInfos();
         if (vars.hasOwnProperty("autoplay")) {
             startPlayback = (vars.autoplay === 'true');
@@ -1207,6 +1323,62 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         //////////////////////////////////////////////////////////////////////////
     }
 
+    function parseQualityStats2() {
+        var result = player2.getDecision(),
+            estimatedBandwidth = player2.getEstimatedBandwidth(),
+            sumBandwidth = 0,
+            finalBandwidth = 0;
+
+            for (var i in estimatedBandwidth) {
+                finalBandwidth = estimatedBandwidth[i];
+            } 
+
+        //////////////////////////////////////////////////////////////////////////
+        //
+        // Charts
+        //
+        //////////////////////////////////////////////////////////////////////////
+        if(!initialDate) {
+            initialDate = new Date();
+        }
+        var actualDate = Math.floor((new Date().getTime() - initialDate.getTime())/1000);
+
+        // Video bitrate
+        chartQuality2.data.datasets[0].data.push({
+            x: actualDate,
+            y: Math.floor((result[0].maxQuality)/100000)/10
+        })
+        // Sum bandwidth client
+        chartQuality2.data.datasets[1].data.push({
+            x: actualDate,
+            y: Math.floor(finalBandwidth/100)/10
+        })
+
+        // Number Of server
+        chartNumberOfServers2.data.datasets[0].data.push({
+            x: actualDate,
+            y: 1
+        })
+
+        // Buffer
+        chartBuffer2.data.datasets[0].data.push({
+            x: actualDate,
+            y: $scope.videoBufferLength2
+        })
+        // Limit Buffer
+        chartBuffer2.data.datasets[1].data.push({
+            x: actualDate,
+            y: timeMaxBuffer+8
+        })
+        if($scope.infosActivated) {
+            chartQuality2.update();
+            chartNumberOfServers2.update();
+            chartBuffer2.update();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
+    }
+
     /////////////////////////////////////////////////////////////
     //
     // Validate sessionID
@@ -1229,6 +1401,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 $scope.selectedItem.url = destinationStats + "/mpd";
                 $scope.selectedItem.type = "gop";
                 $scope.doLoad();
+                $scope.urlDash = destinationStats + "/mpd2";
+                $scope.doLoad2();
             })
             .error(function (data, status, header, config) {
                 $window.location.assign("#/index/1");
@@ -1586,7 +1760,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             links[i].removeSegments();
             links[i].add(pointUpLink, pointDownLink);
         }
-        
+
         view.zoom = 0.5 * view._viewSize._height / 320;
     };
 
@@ -1675,6 +1849,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var parentGraph = document.getElementById('moving-graph');
+    var parentGraph2 = document.getElementById('moving-graph2');
 
     $scope.$watch(function(scope){return scope.infosActivated},function(infosActivated){
         if(infosActivated){
@@ -1683,7 +1858,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             parentGraph.style.left='40%';
             parentGraph.style.right='1.7%';
             parentGraph.style.top='0';
-            parentGraph.style.backgroundColor='rgba(255,255,255,0.7)';
+            parentGraph.style.backgroundColor='rgba(255,255,255,0.9)';
             parentGraph.style.cursor='pointer'
         } else {
             parentGraph.style.position = 'absolute';
@@ -1691,8 +1866,28 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             parentGraph.style.left='88%';
             parentGraph.style.right='1.7%';
             parentGraph.style.top='0';
-            parentGraph.style.backgroundColor='rgba(255,255,255,0.7)';
+            parentGraph.style.backgroundColor='rgba(255,255,255,0.9)';
             parentGraph.style.cursor='pointer';
+        }
+    })
+
+    $scope.$watch(function(scope){return scope.infosActivated2},function(infosActivated2){
+        if(infosActivated2){
+            parentGraph2.style.position = 'absolute';
+            parentGraph2.style.bottom='25%';
+            parentGraph2.style.left='40%';
+            parentGraph2.style.right='1.7%';
+            parentGraph2.style.top='0';
+            parentGraph2.style.backgroundColor='rgba(255,255,255,0.9)';
+            parentGraph2.style.cursor='pointer'
+        } else {
+            parentGraph2.style.position = 'absolute';
+            parentGraph2.style.bottom='92%';
+            parentGraph2.style.left='88%';
+            parentGraph2.style.right='1.7%';
+            parentGraph2.style.top='0';
+            parentGraph2.style.backgroundColor='rgba(255,255,255,0.9)';
+            parentGraph2.style.cursor='pointer';
         }
     })
 
@@ -1701,6 +1896,13 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             $scope.infosActivated=false;
         else
             $scope.infosActivated=true;
+    }
+
+    $scope.reverseInfosActivated2 = function() {
+        if($scope.infosActivated2)
+            $scope.infosActivated2=false;
+        else
+            $scope.infosActivated2=true;
     }
 
     var ctxQuality = document.getElementById("chartQuality");
@@ -1829,7 +2031,188 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 lineTension: 0.1,
                 backgroundColor: "rgba(0,255,0,0.4)",
                 borderColor: "rgba(0,255,0,1)",
-                borderCapStyle: '',
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(0,255,0,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(0,255,0,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                spanGaps: false,
+            },
+            {
+                label: 'Buffer max',
+                data: [],
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(234,133,0,0.4)",
+                borderColor: "rgba(234,133,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(234,133,0,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(234,133,0,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                spanGaps: true,
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    beginAtZero: true,
+                    ticks: {
+                        suggestedMax: 30,
+                        suggestedMin: 0,
+                        display: false
+                    }
+                }]
+            }
+        }
+    });
+
+
+    var ctxQuality2 = document.getElementById("chartQuality2");
+    var chartQuality2 = new Chart(ctxQuality2, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Video bitrate',
+                data: [],
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(255,0,0,0.4)",
+                borderColor: "rgba(255,0,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(255,0,0,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(255,0,0,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                spanGaps: false,
+            },{
+                label: 'Download bitrate',
+                data: [],
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(234,133,0,0.4)",
+                borderColor: "rgba(234,133,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(234,133,0,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(234,133,0,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                spanGaps: true,
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    beginAtZero: true,
+                    ticks: {
+                        suggestedMax: 30,
+                        suggestedMin: 0,
+                        display: false
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctxNumberOfServers2 = document.getElementById("chartNumberOfServers2");
+    var chartNumberOfServers2 = new Chart(ctxNumberOfServers2, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'number of simultaneous servers',
+                data: [],
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(0,0,255,0.4)",
+                borderColor: "rgba(0,0,255,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(0,0,255,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(0,0,255,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                spanGaps: false,
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    beginAtZero: true,
+                    ticks: {
+                        suggestedMax: 30,
+                        suggestedMin: 0,
+                        display: false
+                    }
+                }],
+                yAxes: [{
+                    type: 'linear',
+                    beginAtZero: true,
+                    ticks: {
+                        suggestedMax: 9,
+                        suggestedMin: 0,
+                        step: 1
+                    }
+                }]
+            }
+        }
+    });
+    var ctxBuffer2 = document.getElementById("chartBuffer2");
+    var chartBuffer2 = new Chart(ctxBuffer2, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Buffer Video',
+                data: [],
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(0,255,0,0.4)",
+                borderColor: "rgba(0,255,0,1)",
+                borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
