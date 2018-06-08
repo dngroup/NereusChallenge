@@ -105,7 +105,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         timeMaxBuffer = 8,
         BaseURL = "http://msstream.localhost",
         initialServers = 3,
-        currentEmptyBufferEvent = null;
+        currentEmptyBufferEvent = null,
+        testBegin = false;
 
 
     var nereusMOSService = $window.nereusMOSService();
@@ -940,7 +941,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
     function manifestUpdated () {
         for (var i = 0; i < servers.length; i++) {
-            if(servers[i].state === "updating") servers[i].state = "up";
+            if(servers[i].state === "updating" && testBegin) servers[i].state = "up";
             if(servers[i].state === "deleting") servers[i].state = "down";
             $scope.numberOfServersUpdating = "";
         }
@@ -1215,10 +1216,12 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         $scope.allQualities = result[0].bitratelist;
 
         for(var i in links){
-            links[i].visible = false;
-            linksColor[i] = 'black';
-            linksPercent[i].visible = false;
-            graphServersBandwidths[i].content = "";
+            if (i !== "9"){
+                links[i].visible = false;
+                linksColor[i] = 'black';
+                linksPercent[i].visible = false;
+                graphServersBandwidths[i].content = "";
+            }
         }
         sumBandwidthClient.content = "";
 
@@ -1422,6 +1425,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             },
             data = {};
 
+        testBegin = true;
+
         $http.post(destinationStats, data, config)
             .success(function (data, status, headers, config) {
                 console.log("server added");
@@ -1502,6 +1507,9 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         graphServersBandwidths = [],
         sumBandwidthClient,
         pointCenterRight = new Point(view.center.x + 130, view.center.y),
+        pointCenterLeft,
+        pointBeginLine = new Point(view.center.x - 380, view.center.y),
+        pointEndLine = new Point(view.center.x - 150, view.center.y),
         sliders = [],
         arcs = [];
 
@@ -1718,6 +1726,22 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
     }
 
+    var otherlink = new Path.Line({
+        from: pointBeginLine,
+        to: pointEndLine,
+        strokeColor: {
+            gradient: {
+                stops: ['#FAFAFA', '#A4A4A4', '#585858', '#424242', '#000000']
+            },
+            origin: pointEndLine,
+            destination: pointBeginLine
+        },
+        strokeWidth: 3
+    });
+
+    links.push(otherlink);
+    linksColor.push('black');
+
 //////////////////////////////////////
 //////////////////////////////////////
 
@@ -1728,8 +1752,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 ///////////////////////////////////
     view.onResize = function(event) {
 
-        pointCenterRight = new Point(view.center.x, view.center.y);
-
+        pointCenterRight = new Point(view.center.x + 130, view.center.y);
+        pointCenterLeft = new Point(view.center.x - 450, view.center.y);
         path.position = pointCenterRight;
         path2.position = pointCenterRight;
         path3.position = pointCenterRight;
@@ -1739,6 +1763,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         path7.position = pointCenterRight;
         path8.position = pointCenterRight;
         man.position = pointCenterRight;
+        man2.position = pointCenterLeft;
         legendPaper.position.x = view.bounds.point.x + 200;
         legendPaper.position.y = view.bounds.point.y + 150;
         sumBandwidthClient.position.x = pointCenterRight.x;
@@ -1775,7 +1800,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         refColors['yellow'] = ['#B18904', '#FFBF00', '#FFFF00', '#F7FE2E', '#F3F781'];
         refColors['red'] = ['#8A0808', '#DF0101', '#FF0000', '#FA5858', '#F5A9A9'];
 
-        for (var i = 0; i < serverCount; i++) {
+        for (var i = 0; i < links.length; i++) {
             var changement = 50,
                 totalColor = 5;
             if (event.count % changement < changement / totalColor) {
@@ -1784,7 +1809,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 links[i].strokeColor.gradient.stops[2].color = refColors[linksColor[i]][2];
                 links[i].strokeColor.gradient.stops[3].color = refColors[linksColor[i]][3];
                 links[i].strokeColor.gradient.stops[4].color = refColors[linksColor[i]][4];
-                if (servers[i].state === "updating" || servers[i].state === "deleting") servers[i].opacity = 0.2;
+                if (servers[i] && (servers[i].state === "updating" || servers[i].state === "deleting")) servers[i].opacity = 0.2;
             }
             if (event.count % changement >= changement / totalColor && event.count % changement < changement * 2 / totalColor) {
                 links[i].strokeColor.gradient.stops[0].color = refColors[linksColor[i]][4];
@@ -1792,7 +1817,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 links[i].strokeColor.gradient.stops[2].color = refColors[linksColor[i]][1];
                 links[i].strokeColor.gradient.stops[3].color = refColors[linksColor[i]][2];
                 links[i].strokeColor.gradient.stops[4].color = refColors[linksColor[i]][3];
-                if (servers[i].state === "updating" || servers[i].state === "deleting") servers[i].opacity = 0.5;
+                if (servers[i] && (servers[i].state === "updating" || servers[i].state === "deleting")) servers[i].opacity = 0.5;
             }
             if (event.count % changement >= changement * 2 / totalColor && event.count % changement < changement * 3 / totalColor) {
                 links[i].strokeColor.gradient.stops[0].color = refColors[linksColor[i]][3];
@@ -1800,7 +1825,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 links[i].strokeColor.gradient.stops[2].color = refColors[linksColor[i]][0];
                 links[i].strokeColor.gradient.stops[3].color = refColors[linksColor[i]][1];
                 links[i].strokeColor.gradient.stops[4].color = refColors[linksColor[i]][2];
-                if (servers[i].state === "updating" || servers[i].state === "deleting") servers[i].opacity = 1;
+                if (servers[i] && (servers[i].state === "updating" || servers[i].state === "deleting")) servers[i].opacity = 1;
             }
             if (event.count % changement >= changement * 3 / totalColor && event.count % changement < changement * 4 / totalColor) {
                 links[i].strokeColor.gradient.stops[0].color = refColors[linksColor[i]][2];
@@ -1808,7 +1833,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 links[i].strokeColor.gradient.stops[2].color = refColors[linksColor[i]][4];
                 links[i].strokeColor.gradient.stops[3].color = refColors[linksColor[i]][0];
                 links[i].strokeColor.gradient.stops[4].color = refColors[linksColor[i]][1];
-                if (servers[i].state === "updating" || servers[i].state === "deleting") servers[i].opacity = 0.5;
+                if (servers[i] && (servers[i].state === "updating" || servers[i].state === "deleting")) servers[i].opacity = 0.5;
             }
             if (event.count % changement >= changement * 4 / totalColor && event.count % changement < changement * 5 / totalColor) {
                 links[i].strokeColor.gradient.stops[0].color = refColors[linksColor[i]][1];
@@ -1816,22 +1841,22 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 links[i].strokeColor.gradient.stops[2].color = refColors[linksColor[i]][3];
                 links[i].strokeColor.gradient.stops[3].color = refColors[linksColor[i]][4];
                 links[i].strokeColor.gradient.stops[4].color = refColors[linksColor[i]][0];
-                if (servers[i].state === "updating" || servers[i].state === "deleting") servers[i].opacity = 0.2;
+                if (servers[i] && (servers[i].state === "updating" || servers[i].state === "deleting")) servers[i].opacity = 0.2;
             }
-            if (servers[i].state === "updating") {
+            if (servers[i] && (servers[i].state === "updating")) {
                 graphServersNames[i].visible = true;
                 graphServersNames[i].content = "Adding...";
             }
-            if (servers[i].state === "deleting") {
+            if (servers[i] && (servers[i].state === "deleting")) {
                 graphServersNames[i].visible = true;
                 graphServersNames[i].content = "Removing...";
             }
-            if (servers[i].state === "up") {
+            if (servers[i] && (servers[i].state === "up")) {
                 graphServersNames[i].visible = true;
                 graphServersNames[i].content = "server" + (i+1);
                 servers[i].opacity = 1;
             }
-            if (servers[i].state === "down") {
+            if (servers[i] && (servers[i].state === "down")) {
                 graphServersNames[i].visible = false;
                 servers[i].opacity = 0.2;
             }
@@ -2271,7 +2296,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
     var bullshitMuslin = function() {
         var tableDown=servers.filter(function (elem) {return (elem.state === "down" || elem.state === "deleting");});
-        addServer(tableDown[0], tableDown[0].serverNum);
+        tableDown[0].state = "updating";
+        setTimeout(addServer, 10000, tableDown[0], tableDown[0].serverNum);
     }
 
     setTimeout(bullshitMuslin, 20000);
