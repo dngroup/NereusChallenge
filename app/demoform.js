@@ -38,7 +38,7 @@ app.controller('FormController', function($scope, $sce, $http, $window, $routePa
     $scope.authors=[];
     $scope.contents = [];
     $scope.videoSelected = {};
-    var BaseURL = "http://msstream.viotech.net"
+    var BaseURL = "http://msstream.localhost"
     ////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Content from DB
