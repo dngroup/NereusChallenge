@@ -1225,7 +1225,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         $scope.opQuality = Math.round(result[0].maxQuality / 1e6);
         for (var l in estimatedBandwidth) {
             for (var k = 0; k < $scope.serverdocker.name.length; k++) {
-                if (l.indexOf($scope.serverdocker.name[k].addr) !== -1){
+                if (l.indexOf($scope.serverdocker.name[k].addr) !== -1) {
                     $scope.serverdocker.name[k].estimatedBandwidth = Math.round(estimatedBandwidth[l]);
                 }
             }
@@ -1251,19 +1251,19 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             // Colors
             /////////////////////////////////////
 
-            if(result[0].maxQualityNumber <= 1/4 * (result[0].numberOfQualities-1)) {
+            if(result[i].percent <= 1/4 * 1 / result.length * 100) {
             	localColor = 'red';
             	linksPercent[servernum].fillColor = 'red';
             }
-            if(result[0].maxQualityNumber > 1/4 * (result[0].numberOfQualities-1)) {
+            if(result[i].percent > 1/4 * 1 / result.length * 100) {
             	localColor = 'orange';
             	linksPercent[servernum].fillColor = 'orange';
             }
-            if(result[0].maxQualityNumber > 1/2 * (result[0].numberOfQualities-1)) {
+            if(result[i].percent > 1/2 * 1 / result.length * 100) {
             	localColor = 'yellow';
             	linksPercent[servernum].fillColor = '#B18904';
             }
-            if(result[0].maxQualityNumber > 3/4 * (result[0].numberOfQualities-1)) {
+            if(result[i].percent > 3/4 * 1 / result.length * 100) {
             	localColor = 'green';
             	linksPercent[servernum].fillColor = 'green';
             }
@@ -1575,6 +1575,9 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     var man = new Raster('programmer');
     man.scale(0.6);
 
+    var man2 = new Raster('programmer2');
+    man2.scale(0.6);
+
     var legendPaper = new Raster('legend');
     legendPaper.scale(0);
 
@@ -1858,7 +1861,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             parentGraph.style.left='40%';
             parentGraph.style.right='1.7%';
             parentGraph.style.top='0';
-            parentGraph.style.backgroundColor='rgba(255,255,255,0.9)';
+            parentGraph.style.backgroundColor='rgba(255,255,255,0.7)';
             parentGraph.style.cursor='pointer'
         } else {
             parentGraph.style.position = 'absolute';
@@ -1866,7 +1869,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             parentGraph.style.left='88%';
             parentGraph.style.right='1.7%';
             parentGraph.style.top='0';
-            parentGraph.style.backgroundColor='rgba(255,255,255,0.9)';
+            parentGraph.style.backgroundColor='rgba(255,255,255,0.7)';
             parentGraph.style.cursor='pointer';
         }
     })
@@ -1878,7 +1881,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             parentGraph2.style.left='40%';
             parentGraph2.style.right='1.7%';
             parentGraph2.style.top='0';
-            parentGraph2.style.backgroundColor='rgba(255,255,255,0.9)';
+            parentGraph2.style.backgroundColor='rgba(255,255,255,0.7)';
             parentGraph2.style.cursor='pointer'
         } else {
             parentGraph2.style.position = 'absolute';
@@ -1886,7 +1889,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             parentGraph2.style.left='88%';
             parentGraph2.style.right='1.7%';
             parentGraph2.style.top='0';
-            parentGraph2.style.backgroundColor='rgba(255,255,255,0.9)';
+            parentGraph2.style.backgroundColor='rgba(255,255,255,0.7)';
             parentGraph2.style.cursor='pointer';
         }
     })
