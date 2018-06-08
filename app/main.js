@@ -103,7 +103,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         urlLogServer,
         initialDate,
         timeMaxBuffer = 8,
-        BaseURL = "http://msstream.viotech.net",
+        BaseURL = "http://msstream.localhost",
         initialServers = 3,
         currentEmptyBufferEvent = null;
 
