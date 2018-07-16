@@ -38,7 +38,7 @@ app.controller('FormController', function($scope, $sce, $http, $window, $routePa
     $scope.authors=[];
     $scope.contents = [];
     $scope.videoSelected = {};
-    var BaseURL = "http://msstream.localhost"
+    var BaseURL = "http://msstream.viotech.net"
     ////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Content from DB
@@ -201,7 +201,7 @@ app.controller('FormController', function($scope, $sce, $http, $window, $routePa
                     "id": 3,
                     "bandwidth": 3200
                 },
-                {
+                /*{
                     "id": 4,
                     "bandwidth": 3200
                 },
@@ -224,7 +224,7 @@ app.controller('FormController', function($scope, $sce, $http, $window, $routePa
                 {
                     "id": 9,
                     "bandwidth": 3200
-                }
+                }*/
             ],
             numberOfServers = 3,
             videoName = videoSelected.ytbid||"Wings_to_paradise";

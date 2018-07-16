@@ -103,7 +103,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         urlLogServer,
         initialDate,
         timeMaxBuffer = 8,
-        BaseURL = "http://msstream.localhost",
+        BaseURL = "http://msstream.viotech.net",
         initialServers = 3,
         currentEmptyBufferEvent = null,
         testBegin = false;
@@ -312,6 +312,9 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                     });
                     $scope.serverdocker.name.sort(function(a,b){return a.serverNumber - b.serverNumber;})
                 })
+                $scope.serverdocker.name[0].name = 'Light';
+                $scope.serverdocker.name[1].name = 'Ethernet';
+                $scope.serverdocker.name[2].name = 'WiFi';
 
                 $scope.imageQuality = "app/img/quality3des.jpg";
 
@@ -1457,6 +1460,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     }
 
     $scope.chooseServer = function(name) {
+        return true;
         for (var i in servers) {
             if (graphServersNames[i].content === name && servers[i].opacity === 1) return true;
         }
@@ -1583,8 +1587,8 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     var man = new Raster('programmer');
     man.scale(0.6);
 
-    var man2 = new Raster('programmer2');
-    man2.scale(0.6);
+    //var man2 = new Raster('programmer2');
+    //man2.scale(0.6);
 
     var legendPaper = new Raster('legend');
     legendPaper.scale(0);
@@ -1604,7 +1608,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 //
 ///////////////////////////////////
     var servers = [],
-        serverCount = 9,
+        serverCount = 3,
         i,
         //serverOrig = new Raster('server'),
         server,
@@ -1620,7 +1624,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             server = serverOrig.clone();
         }*/
         server = new Raster('server' + (i+1));
-        server.scale(0.6);
+        server.scale(0.2);
         server.serverNum = i + 1;
         server.onMouseEnter = function(event) {
             document.body.style.cursor='pointer';
@@ -1636,12 +1640,25 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         // Server names
         //////////////////////////////////
         var pointServerName = path.getPointAt(radiusBase * 2 * 3.14 * i / serverCount);
+        var contentName = '';
+        if (i === 0) {
+            contentName = 'Light';
+        }
+        if (i === 1) {
+            contentName = 'Ethernet';
+        }
+        if (i === 2) {
+            contentName = 'WiFi';
+        }
+
+
+
         graphServerName = new PointText({
             point: pointServerName,
             justification: 'center',
             fontSize: 20,
             fillColor: 'blue',
-            content: "server" + (i + 1)
+            content: contentName//"server" + (i + 1)
         });
         graphServerName.position.y = graphServerName.position.y+60;
         graphServersNames.push(graphServerName);
@@ -1726,7 +1743,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 
     }
 
-    var otherlink = new Path.Line({
+    /*var otherlink = new Path.Line({
         from: pointBeginLine,
         to: pointEndLine,
         strokeColor: {
@@ -1740,7 +1757,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
     });
 
     links.push(otherlink);
-    linksColor.push('black');
+    linksColor.push('black');*/
 
 //////////////////////////////////////
 //////////////////////////////////////
@@ -1752,7 +1769,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
 ///////////////////////////////////
     view.onResize = function(event) {
 
-        pointCenterRight = new Point(view.center.x + 130, view.center.y);
+        pointCenterRight = new Point(view.center.x/* + 130*/, view.center.y);
         pointCenterLeft = new Point(view.center.x - 450, view.center.y);
         path.position = pointCenterRight;
         path2.position = pointCenterRight;
@@ -1763,7 +1780,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         path7.position = pointCenterRight;
         path8.position = pointCenterRight;
         man.position = pointCenterRight;
-        man2.position = pointCenterLeft;
+        //man2.position = pointCenterLeft;
         legendPaper.position.x = view.bounds.point.x + 200;
         legendPaper.position.y = view.bounds.point.y + 150;
         sumBandwidthClient.position.x = pointCenterRight.x;
@@ -1779,6 +1796,7 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
                 pointServerName = path.getPointAt(radiusBase * 2 * 3.14 * i / serverCount),
                 pointServerBandwidth = path.getPointAt(radiusBase * 2 * 3.14 * i / serverCount);
 
+            pointServer.y = pointServer.y - 30    
             pointServerName.y = pointServerName.y + 60;
             graphServersNames[i].setPoint(pointServerName);
             pointServerBandwidth.y = pointServerBandwidth.y - 55;
@@ -1845,15 +1863,15 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
             }
             if (servers[i] && (servers[i].state === "updating")) {
                 graphServersNames[i].visible = true;
-                graphServersNames[i].content = "Adding...";
+                //graphServersNames[i].content = "Adding...";
             }
             if (servers[i] && (servers[i].state === "deleting")) {
                 graphServersNames[i].visible = true;
-                graphServersNames[i].content = "Removing...";
+                //graphServersNames[i].content = "Removing...";
             }
             if (servers[i] && (servers[i].state === "up")) {
                 graphServersNames[i].visible = true;
-                graphServersNames[i].content = "server" + (i+1);
+                //graphServersNames[i].content = "server" + (i+1);
                 servers[i].opacity = 1;
             }
             if (servers[i] && (servers[i].state === "down")) {
@@ -2300,6 +2318,6 @@ app.controller('DashController', function($scope, $sce, $http, Idle, $window, $r
         setTimeout(addServer, 10000, tableDown[0], tableDown[0].serverNum);
     }
 
-    setTimeout(bullshitMuslin, 20000);
+    //setTimeout(bullshitMuslin, 20000);
 
 });
